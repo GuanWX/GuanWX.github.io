@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://guanwx.github.io</id>
     <title>同性交友平台</title>
-    <updated>2021-02-28T09:13:15.749Z</updated>
+    <updated>2021-02-28T12:18:04.852Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://guanwx.github.io"/>
     <link rel="self" href="https://guanwx.github.io/atom.xml"/>
@@ -16,7 +16,45 @@
         <link href="https://guanwx.github.io/post/shi-yong-gridea-he-github-da-jian-zi-ji-de-bo-ke/">
         </link>
         <updated>2021-02-28T08:06:43.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="安装gridea">安装Gridea</h2>
+        <content type="html"><![CDATA[<h2 id="安装gridea"><strong>安装Gridea</strong></h2>
+<ol>
+<li>首先在gridea的<a href="https://gridea.dev/">官网</a>下载安装包，国内可以选择gitee的镜像源</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://guanwx.github.io/post-images/1614505449950.png" alt="" loading="lazy"></figure>
+<ol start="2">
+<li>进行傻瓜式安装，安装完成后打开软件，界面展示如图所示</li>
+</ol>
+<figure data-type="image" tabindex="2"><img src="https://guanwx.github.io/post-images/1614505494413.png" alt="" loading="lazy"></figure>
+<ol start="3">
+<li>
+<p>此时我们可以通过点击右上角加号的新建文章，文章的格式是Markdown格式文件，可以通过<a href="https://www.typora.io/">Typora</a>软件进行编辑，然后复制到Gridea中，值得注意的是在Typora中插入图片时，应该直接引用file<code>![](file:path)</code>  ,而非img<code>&lt;img src=&quot;file:path&quot;/&gt;</code>。</p>
+</li>
+<li>
+<p>此时如果我们点击左下角的预览功能，我们可以在本地查看，文章转换为html后的演示，具体实验原理是使用了<a href="https://hexo.io/zh-cn/">Hexo</a>框架实现，如果你学习过hexo框架，那么你将清楚地明白，文章是如何被转换为html的<code>这正是我们图片应当使用file的原因</code>。</p>
+</li>
+</ol>
+<h2 id="将文章推送到远端"><strong>将文章推送到远端</strong></h2>
+<p>当文章写好之后，文章还是存在于当前电脑，我们无法从互联网上查看我们的文章，我们可以将我们的文章部署到<a href="https://github.com/">Github</a>上去。Github提供Pages服务，可以帮助我们发布我们的博客。</p>
+<ol>
+<li>
+<p>首先我们需要一个创建一个仓库，仓库的名称是固定的，格式是<code>Username.github.io</code>，例如：我自己Github账户名是<code>GuanWX</code>，那么我的的博客仓库就是<code>GuanWX.github.io</code>。</p>
+</li>
+<li>
+<p>之后我们需要打开这个仓库的Pages服务(事实上如果我们创建的仓库名称符合第1条中的规则时，Pages服务会自动打开)。点击仓库的setting，在下方找到Github Pages，打开服务即可。此处有一个提示，它会告诉你的博客地址是什么。我的博客地址就是<code>guanwx.github.io</code><br>
+<img src="https://guanwx.github.io/post-images/1614513917405.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>在开启Pages服务后，我们需要新建一个token。点击个人头像，在下拉菜单中点击依次<code>Setting --&gt; Developer Setting --&gt; Personal access tokens</code>，新建一个token，勾选repo权限。创建完成后不要着急关闭界面，这个token之后不在展示，只会展示这一次，一定要保存好。<br>
+<img src="https://guanwx.github.io/post-images/1614514219631.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>点击Gridea客户端中的的远程界面，在远程见面中配置关键的信息，点击链接测试，如果配置信息没有问题的话，那么此时就会提示链接成功，点击保存即可退出。<br>
+<img src="https://guanwx.github.io/post-images/1614514413328.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>点击Gridea左下角的同步，等待同步完成。打开我们的博客地址就会发现我们在博客已经被推送到了Github上，现在所有人都可以访问我们的博客了。</p>
+</li>
+</ol>
 ]]></content>
     </entry>
 </feed>
