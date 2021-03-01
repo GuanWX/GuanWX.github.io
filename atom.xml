@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://guanwx.github.io</id>
     <title>同性交友平台</title>
-    <updated>2021-03-01T12:52:24.263Z</updated>
+    <updated>2021-03-01T12:53:06.214Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://guanwx.github.io"/>
     <link rel="self" href="https://guanwx.github.io/atom.xml"/>
@@ -174,7 +174,7 @@ public class JdbcSecurityConfig extends WebSecurityConfigurerAdapter {
 <p>此时我们可以通过点击右上角加号的新建文章，文章的格式是Markdown格式文件，可以通过<a href="https://www.typora.io/">Typora</a>软件进行编辑，然后复制到Gridea中，值得注意的是在Typora中插入图片时，应该直接引用file<code>![](file:path)</code>  ,而非img<code>&lt;img src=&quot;file:path&quot;/&gt;</code>。</p>
 </li>
 <li>
-<p>此时如果我们点击左下角的预览功能，我们可以在本地查看，文章转换为html后的演示，具体实验原理是使用了<a href="https://hexo.io/zh-cn/">Hexo</a>框架实现，如果你学习过hexo框架，那么你将清楚地明白，文章是如何被转换为html的<code>这正是我们图片应当使用file的原因</code>。</p>
+<p>此时如果我们点击左下角的预览功能，我们可以在本地查看，文章转换为html后的演示，具体实现原理是使用了<a href="https://hexo.io/zh-cn/">Hexo</a>框架实现，如果你学习过hexo框架，那么你将清楚地明白，文章是如何被转换为html的<code>这正是我们图片应当使用file的原因</code>。</p>
 </li>
 </ol>
 <h2 id="将文章推送到远端"><strong>将文章推送到远端</strong></h2>
