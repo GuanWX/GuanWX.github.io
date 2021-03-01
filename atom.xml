@@ -2,14 +2,152 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://guanwx.github.io</id>
     <title>同性交友平台</title>
-    <updated>2021-02-28T12:57:04.564Z</updated>
+    <updated>2021-03-01T12:52:24.263Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://guanwx.github.io"/>
     <link rel="self" href="https://guanwx.github.io/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
+    <subtitle>我们一起祈祷头发不会变少</subtitle>
     <logo>https://guanwx.github.io/images/avatar.png</logo>
     <icon>https://guanwx.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 同性交友平台</rights>
+    <entry>
+        <title type="html"><![CDATA[Spring Security]]></title>
+        <id>https://guanwx.github.io/post/spring-security/</id>
+        <link href="https://guanwx.github.io/post/spring-security/">
+        </link>
+        <updated>2021-03-01T12:23:11.000Z</updated>
+        <summary type="html"><![CDATA[<!-- more -->
+<p>Spring Security 是Java Spring Boot中的关于安全认证方面的组件，它可以帮助我们完成登录和鉴权方面的工作。</p>
+]]></summary>
+        <content type="html"><![CDATA[<!-- more -->
+<p>Spring Security 是Java Spring Boot中的关于安全认证方面的组件，它可以帮助我们完成登录和鉴权方面的工作。</p>
+<!-- more -->
+<h2 id="在maven中导入依赖">在Maven中导入依赖</h2>
+<p>要使用Security,我们需要在pom.xml文件中<strong>导入依赖</strong>。</p>
+<pre><code class="language-java">        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<h2 id="使用spring-security">使用Spring Security</h2>
+<ol>
+<li><strong>创建一个用户类</strong>，包含<code>username</code>，<code>password</code>和<code>role</code>，并且要实现<code>UserDetails</code>接口</li>
+</ol>
+<pre><code class="language-java">@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User implements UserDetails {
+   private Integer id;
+   private String name;
+   private String password;
+   private String role;
+   @Override
+   public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+       return AuthorityUtils.commaSeparatedStringToAuthorityList(role);
+   }
+   @Override
+   public boolean isAccountNonExpired() {
+       return true;
+   }
+   @Override
+   public boolean isAccountNonLocked() {
+       return true;
+   }
+   @Override
+   public boolean isCredentialsNonExpired() {
+       return true;
+   }
+   @Override
+   public boolean isEnabled() {
+       return true;
+   }
+</code></pre>
+<p>其中的<code>username</code>和<code>password</code>的作用不用多说，<code>role</code>则是用来鉴权。</p>
+<ol start="2">
+<li><strong>创建一个<code>userService</code>对象</strong>实现<code>UserDetailsService</code>,重写<code>loadUserByUsername</code>方法。</li>
+</ol>
+<pre><code class="language-java">@Service
+public class UserService implements UserDetailsService {
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = new User();
+        user.setName(name);
+        User result = userMapper.selectUserByNameAndPassword(user);
+        if (result == null) {
+            throw new UsernameNotFoundException(&quot;用户&quot; + s + &quot;不存在&quot;);
+        }
+        String password = passwordEncoder.encode(result.getPassword());
+        result.setPassword(password);
+        return result;
+    }
+}
+</code></pre>
+<pre><code class="language-java">@Configuration
+public class SpringBean {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+</code></pre>
+<p>值得注意的是Security默认密码进行了加密，且默认加密的方式为<code>BCryptPasswordEncoder</code>，因此如果我们的数据库没有进行加密，则我们需要这java程序中进行加密，当然这种方式是不推荐的，在工作中数据库中的密码应该已经加密过了。</p>
+<ol start="3">
+<li><strong>配置Security的关键配置</strong></li>
+</ol>
+<pre><code class="language-java">@EnableWebSecurity
+public class JdbcSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+
+    public JdbcSecurityConfig(PasswordEncoder passwordEncoder, UserService userService) {
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 此处配置的是如何加载数据库中user，关键配置是userDetailsService
+        // passWordEncoder默认是BCryptPasswordEncoder，我这边使用的恰恰是这种加密方式，因此可以不必指定
+        // passWordEncoder也可以指定为不加密 .passwordEncoder(NoOpPasswordEncoder.getInstance())
+				auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers(&quot;/swagger-ui.html&quot;).permitAll()
+                .antMatchers(&quot;/main.html&quot;).hasRole(&quot;User&quot;)
+                .antMatchers(&quot;/api/**&quot;).hasAnyRole(&quot;User&quot;,&quot;Admin&quot;)
+                .and().headers().frameOptions().disable();
+        http.formLogin()
+                .loginPage(&quot;/login.html&quot;) // 指定登录界面
+                .loginProcessingUrl(&quot;/login&quot;) // 指定登录的URL
+                .usernameParameter(&quot;name&quot;) // 前端提交的用户名的字段名
+                .passwordParameter(&quot;pwd&quot;) // 前端提交的密码的字段名
+                .successHandler(
+                        (httpServletRequest, httpServletResponse, authentication) -&gt; {
+                            httpServletResponse.sendRedirect(&quot;/swagger-ui.html&quot;);
+                        }) 						// 成功时拦截器，可以做哪些事
+                .failureForwardUrl(&quot;/404.html&quot;); // 失败时的页面跳转
+        http.logout();
+        http.rememberMe().rememberMeParameter(&quot;rememberme&quot;);
+        http.csrf().disable();
+    }
+}
+</code></pre>
+<p>针对<code>configure(AuthenticationManagerBuilder auth)</code>,主要是java程序与数据库之间的关系,主要需要设定的参数就是用户的查询服务以及密码的加载方式。<br>
+而针对<code>configure(HttpSecurity http)</code>则主要是java程序和前端的配置，可以选择的配置有很多。<br>
+1. 首先对访问的设定，可以指定那些页面，那些api需要什么样的角色，值得注意的是数据库中的角色必须是<code>ROLE_</code>开头才可以。这些设定在<code>http.authorizeRequests()</code>中配置。<br>
+2. 其次是对登录界面的设定，Security有默认的登录界面，但是我们也可以自己定义登录的界面、api、前端提交的用户名密码的字段名，成功时的拦截器（跳转界面）等等。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[使用Gridea和Github搭建自己的博客]]></title>
         <id>https://guanwx.github.io/post/gridea-github/</id>
