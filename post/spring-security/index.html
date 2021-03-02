@@ -78,7 +78,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1614603181487"
+            <form id="gridea-search-form" style="position: relative" data-update="1614696546577"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -128,7 +128,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1614603181487"
+            <form id="gridea-search-form" style="position: relative" data-update="1614696546577"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -159,7 +159,7 @@
               <h1>Spring Security</h1>
               <span class="meta">
                 Posted on
-                2021-03-01，4 min read
+                2021-03-01，5 min read
               </span>
             </div>
           
@@ -304,12 +304,34 @@ public class JdbcSecurityConfig extends WebSecurityConfigurerAdapter {
 而针对<code>configure(HttpSecurity http)</code>则主要是java程序和前端的配置，可以选择的配置有很多。<br>
 1. 首先对访问的设定，可以指定那些页面，那些api需要什么样的角色，值得注意的是数据库中的角色必须是<code>ROLE_</code>开头才可以。这些设定在<code>http.authorizeRequests()</code>中配置。<br>
 2. 其次是对登录界面的设定，Security有默认的登录界面，但是我们也可以自己定义登录的界面、api、前端提交的用户名密码的字段名，成功时的拦截器（跳转界面）等等。</p>
+<h2 id="在session中获得当前登录用户的信息">在Session中获得当前登录用户的信息</h2>
+<p>登录之后，可以在session中获得当前登录用户的信息<code>SecurityContextHolder.getContext().getAuthentication();</code>这是一个静态方法，可以被直接调用。</p>
+<p>当我们没有登录时，我们查看当前用户的信息时，会的到如下的属性：</p>
+<pre><code>AnonymousAuthenticationToken 
+[Principal=anonymousUser, 
+Credentials=[PROTECTED],
+Authenticated=true, 
+Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], 
+Granted Authorities=[ROLE_ANONYMOUS]]
+</code></pre>
+<p>此时的<code>Authentication</code>是一个<code>AnonymousAuthenticationToken</code>类，表示当前用户一个访客用户。</p>
+<p>如果我们登录了用户，那我们得到的用户信息是这样的：</p>
+<pre><code>UsernamePasswordAuthenticationToken 
+[Principal=User(id=2, name=aa, password=$2a$10$cJhJYmK//w46pWIU2tquxOU4RIO/clNw4xS6YmnmMLsoVQ.grFl3q, email=a@a.com, activated=1, role=ROLE_User), 
+Credentials=[PROTECTED], 
+Authenticated=true, 
+Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null], 
+Granted Authorities=[ROLE_User]]
+</code></pre>
+<p>此时的<code>Authentication</code>是一个<code>UsernamePasswordAuthenticationToken</code>类，我们可以进一步过得其中的User信息。</p>
+<p>其中的权限角色是一个List的集合，默认的类型是<code>SimpleGrantedAuthority</code>。</p>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
 <li><a href="#%E5%9C%A8maven%E4%B8%AD%E5%AF%BC%E5%85%A5%E4%BE%9D%E8%B5%96">在Maven中导入依赖</a></li>
 <li><a href="#%E4%BD%BF%E7%94%A8spring-security">使用Spring Security</a></li>
+<li><a href="#%E5%9C%A8session%E4%B8%AD%E8%8E%B7%E5%BE%97%E5%BD%93%E5%89%8D%E7%99%BB%E5%BD%95%E7%94%A8%E6%88%B7%E7%9A%84%E4%BF%A1%E6%81%AF">在Session中获得当前登录用户的信息</a></li>
 </ul>
 </li>
 </ul>
