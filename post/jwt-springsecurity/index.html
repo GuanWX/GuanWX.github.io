@@ -78,7 +78,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1614697293636"
+            <form id="gridea-search-form" style="position: relative" data-update="1614775108279"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -128,7 +128,7 @@
         
         <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1614697293636"
+            <form id="gridea-search-form" style="position: relative" data-update="1614775108279"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -159,7 +159,7 @@
               <h1>JWT在Spring Security中的应用</h1>
               <span class="meta">
                 Posted on
-                2021-03-02，2 min read
+                2021-03-02，6 min read
               </span>
             </div>
           
@@ -207,18 +207,185 @@
 <li>拼接 headerB 和 payloadB 为 headerB.payloadB，将其作为一个整体，使用 HS256 进行加密(secret 为密钥)，从而得到 signature A</li>
 <li>把 signature A 用 base64 编码得到 signature B，所以最后的结果就是 headerB.payloadB.signatureB</li>
 </ol>
-<p>以上原理部分出自AckermanZ的<a href="https://www.jianshu.com/p/76f18cb0c6fe">文章</a><br>
-Java Security 中使用JWT进行认证。</p>
+<p>以上原理部分出自AckermanZ的<a href="https://www.jianshu.com/p/76f18cb0c6fe">文章</a></p>
+<h2 id="java-security-中使用jwt进行认证和鉴权">Java Security 中使用JWT进行认证和鉴权。</h2>
+<h3 id="使用jwt进行认证">使用JWT进行认证</h3>
+<p>方法一：在登录成功的<code>successHandler</code>中生成JWT，将JWT发送给前端</p>
+<pre><code class="language-java">@EnableWebSecurity
+public class JdbcSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+				// 将Session禁用
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.formLogin()
+                .loginProcessingUrl(&quot;/login&quot;)
+                .usernameParameter(&quot;name&quot;)
+                .passwordParameter(&quot;pwd&quot;)
+                .successHandler(
+                        (httpServletRequest, httpServletResponse, authentication) -&gt; {
+														// 认证成功后，获得User的信息，生成JWT返回给前端。
+                            User user = (User) authentication.getPrincipal();
+                            Integer id = user.getId();
+                            String username = user.getName();
+                            Collection&lt;? extends GrantedAuthority&gt; authorities = authentication.getAuthorities();
+                            List&lt;String&gt; roles = new LinkedList&lt;&gt;();
+                            authorities.forEach((Consumer&lt;GrantedAuthority&gt;) grantedAuthority -&gt; roles.add(grantedAuthority.getAuthority()));
+                            // 生成秘钥
+														Algorithm algorithm = Algorithm.HMAC512(&quot;123456&quot;);
+                            String token = JWT.create()
+																		// 添加Claim
+                                    .withClaim(&quot;userId&quot;, id)
+                                    .withClaim(&quot;username&quot;, username)
+                                    .withClaim(&quot;role&quot;, roles)
+																		// 设置过期时间
+                                    .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 3600 * 3))
+                                    .sign(algorithm);
+
+                            System.out.println(token);
+                            httpServletResponse.setStatus(HttpStatus.OK.value());
+                            ServletOutputStream outputStream = httpServletResponse.getOutputStream();
+                            outputStream.write(token.getBytes(StandardCharsets.UTF_8));
+                           	outputStream.close();
+                        });
+				// 鉴权用的过滤器
+        http.addFilter(new JwtVerifyFilter(authenticationManagerBean()));
+
+        http.logout();
+        http.rememberMe().rememberMeParameter(&quot;rememberme&quot;);
+        http.csrf().disable();
+    }
+    
+}
+</code></pre>
+<p>方法二：新建一个过滤器继承<code>UsernamePasswordAuthenticationFilter</code>,将这个过滤器添加当过滤器集合中。</p>
+<pre><code class="language-java">public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+    }
+
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+
+        User user = (User) authResult.getPrincipal();
+        Integer id = user.getId();
+        String username = user.getName();
+        Collection&lt;? extends GrantedAuthority&gt; authorities = authResult.getAuthorities();
+        List&lt;String&gt; roles = new LinkedList&lt;&gt;();
+        authorities.forEach((Consumer&lt;GrantedAuthority&gt;) grantedAuthority -&gt; roles.add(grantedAuthority.getAuthority()));
+        Algorithm algorithm = Algorithm.HMAC512(&quot;123456&quot;);
+        String token = JWT.create()
+                .withClaim(&quot;userId&quot;, id)
+                .withClaim(&quot;username&quot;, username)
+                .withClaim(&quot;role&quot;, roles)
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 3600 * 3))
+                .sign(algorithm);
+
+        System.out.println(token);
+
+        response.setStatus(HttpStatus.OK.value());
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(token.getBytes(StandardCharsets.UTF_8));
+
+        chain.doFilter(request, response);
+
+    }
+}
+</code></pre>
+<pre><code class="language-java">@EnableWebSecurity
+public class JdbcSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+				// 将Session禁用
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				/*
+						此处将`successHandler`清除即可
+				*/
+				// 添加自定义的过滤器
+        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean()), UsernamePasswordAuthenticationFilter.class)
+							addFilter(new JwtVerifyFilter(authenticationManagerBean()));
+
+        http.logout();
+        http.rememberMe().rememberMeParameter(&quot;rememberme&quot;);
+        http.csrf().disable();
+    }
+}
+</code></pre>
+<h3 id="使用jwt进行鉴权">使用JWT进行鉴权</h3>
+<p>新建一个过滤器继承<code>BasicAuthenticationFilter</code>,在其中进行鉴权工作，并且将过滤器添加到过滤器集合中。</p>
+<pre><code class="language-java">public class JwtVerifyFilter extends BasicAuthenticationFilter {
+    public JwtVerifyFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+    }
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        String authorization = request.getHeader(&quot;Authorization&quot;);
+        if (authorization != null &amp;&amp; authorization.startsWith(&quot;Bearer&quot;)) {
+            String token = authorization.substring(7);
+            try {
+                Algorithm algorithm = Algorithm.HMAC512(&quot;123456&quot;);
+                JWTVerifier verifier = JWT.require(algorithm).build(); // Reusable verifier instance
+                DecodedJWT jwt = verifier.verify(token);
+
+                Date expiresAt = jwt.getExpiresAt();
+                if (expiresAt.after(new Date())) {
+                    SecurityContextHolder.getContext().setAuthentication(getAuthentication(jwt));
+                    doFilter(request, response, chain);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    ServletOutputStream outputStream = response.getOutputStream();
+                    outputStream.write(&quot;登录过期，请重新登录&quot;.getBytes(StandardCharsets.UTF_8));
+                }
+            } catch (JWTVerificationException exception) {
+                // Invalid signature/claims
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                ServletOutputStream outputStream = response.getOutputStream();
+                outputStream.write(&quot;Token错误&quot;.getBytes(StandardCharsets.UTF_8));
+            }
+        } else {
+            doFilter(request, response, chain);
+        }
+    }
+
+    private UsernamePasswordAuthenticationToken getAuthentication(DecodedJWT jwt) {
+        String username = jwt.getClaim(&quot;username&quot;).asString();
+        Integer userId = jwt.getClaim(&quot;userId&quot;).asInt();
+        List&lt;SimpleGrantedAuthority&gt; role = jwt.getClaim(&quot;role&quot;).asList(SimpleGrantedAuthority.class);
+        User user = new User();
+        user.setId(userId);
+        user.setName(username);
+        return new UsernamePasswordAuthenticationToken(user, null, role);
+    }
+}
+</code></pre>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
 <li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFjwt">什么是JWT</a></li>
 <li><a href="#jwt%E7%9A%84%E6%9E%84%E6%88%90">JWT的构成</a></li>
+<li><a href="#java-security-%E4%B8%AD%E4%BD%BF%E7%94%A8jwt%E8%BF%9B%E8%A1%8C%E8%AE%A4%E8%AF%81%E5%92%8C%E9%89%B4%E6%9D%83">Java Security 中使用JWT进行认证和鉴权。</a>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8jwt%E8%BF%9B%E8%A1%8C%E8%AE%A4%E8%AF%81">使用JWT进行认证</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8jwt%E8%BF%9B%E8%A1%8C%E9%89%B4%E6%9D%83">使用JWT进行鉴权</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
+          
+          <hr />
+          <p class="next-post">下一篇：
+            <a href="https://guanwx.github.io/post/spring-security/">
+              <span class="post-title">
+                Spring Security&rarr;
+              </span>
+            </a>
+          </p>
           
           <div class="comment" style="text-align: center;">
             
