@@ -1,8 +1,8 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>All Posts - GuanWX 的小屋</title>
+        <title>All Posts - GuanWX的Blog</title>
         <link>https://GuanWX.github.io/posts/</link>
-        <description>All Posts | GuanWX 的小屋</description>
+        <description>All Posts | GuanWX的Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>guanwenxuan1998@gmail.com (GuanWX)</managingEditor>
             <webMaster>guanwenxuan1998@gmail.com (GuanWX)</webMaster><lastBuildDate>Sat, 28 May 2022 01:41:22 &#43;0800</lastBuildDate><atom:link href="https://GuanWX.github.io/posts/" rel="self" type="application/rss+xml" /><item>
     <title>First_post</title>
@@ -10,7 +10,7 @@
     <pubDate>Sat, 28 May 2022 01:41:22 &#43;0800</pubDate>
     <author>GuanWX</author>
     <guid>https://GuanWX.github.io/first_post/</guid>
-    <description><![CDATA[一篇博客 1.第一节 1.1 第一节第一段 测试 2. 第二节 1 2 3 { &#34;test&#34;: &#34;test&#34; }]]></description>
+    <description><![CDATA[<p>我的第一篇Blog</p>]]></description>
 </item>
 </channel>
 </rss>
