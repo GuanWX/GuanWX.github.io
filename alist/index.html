@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>使用Alist搭建文件存储系统 - GuanWX的Blog</title><meta name="Description" content="世界上最小的同性交友平台"><meta property="og:title" content="使用Alist搭建文件存储系统" />
+<meta property="og:description" content="使用Alist搭建文件存储系统" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://GuanWX.github.io/alist/" /><meta property="og:image" content="https://GuanWX.github.io/images/phone.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-07-18T01:41:22+08:00" />
+<meta property="article:modified_time" content="2022-07-18T01:41:22+08:00" /><meta property="og:site_name" content="我的网站" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://GuanWX.github.io/images/phone.png"/>
+
+<meta name="twitter:title" content="使用Alist搭建文件存储系统"/>
+<meta name="twitter:description" content="使用Alist搭建文件存储系统"/>
+<meta name="application-name" content="我的网站">
+<meta name="apple-mobile-web-app-title" content="我的网站"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://GuanWX.github.io/alist/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "使用Alist搭建文件存储系统",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/GuanWX.github.io\/alist\/"
+        },"genre": "posts","wordcount":  782 ,
+        "url": "https:\/\/GuanWX.github.io\/alist\/","datePublished": "2022-07-18T01:41:22+08:00","dateModified": "2022-07-18T01:41:22+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "GuanWX"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="GuanWX的Blog"><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="GuanWX的Blog"><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">使用Alist搭建文件存储系统</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>GuanWX</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-07-18">2022-07-18</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;782 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-alist介绍">1. Alist介绍</a></li>
+    <li><a href="#2-部署alist服务">2. 部署Alist服务</a>
+      <ul>
+        <li><a href="#21-使用docker部署alist">2.1 使用Docker部署Alist</a></li>
+        <li><a href="#22-使用docker查看密码">2.2 使用Docker查看密码</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-修改alist配置">3. 修改Alist配置</a>
+      <ul>
+        <li><a href="#31-修改后段设置">3.1 修改后段设置</a></li>
+        <li><a href="#32-添加阿里云盘账号">3.2 添加阿里云盘账号</a></li>
+        <li><a href="#33-获取阿里云盘token">3.3 获取阿里云盘token</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-集成webdav">4. 集成webDav</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>使用Alist搭建文件存储系统</p>
+<h1 id="使用alist搭建文件存储系统">使用Alist搭建文件存储系统</h1>
+<h2 id="1-alist介绍">1. Alist介绍</h2>
+<p><strong>Alist</strong>是 一个支持多存储的文件列表程序 ，已经在<a href="https://github.com/alist-org/alist" target="_blank" rel="noopener noreffer">github</a>上开源，并且有丰富的<a href="https://alist-doc.nn.ci/" target="_blank" rel="noopener noreffer">论坛</a>内容。alist支持多种网盘，本篇博客将使用alist + <strong>阿里云盘</strong>进行部署。</p>
+<p>值得注意的是使用阿里云盘作为文件存储网盘，并提供给他人使用，存在一定的风险导致封号。如果不提供给他人使用，可以降低封号的风险(几乎没有风险)。</p>
+<h2 id="2-部署alist服务">2. 部署Alist服务</h2>
+<h3 id="21-使用docker部署alist">2.1 使用Docker部署Alist</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -d --restart<span class="o">=</span>always -v /etc/alist:/opt/alist/data -p 5244:5244 --name<span class="o">=</span><span class="s2">&#34;alist&#34;</span> xhofe/alist:latest
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>docker运行成功后可以在浏览器中输入ip:5244打开Alist网址，此时的Alist仅仅是部署成功，还需要修改一些配置</p>
+<h3 id="22-使用docker查看密码">2.2 使用Docker查看密码</h3>
+<p>Alist启动后首次登陆使用了随机密码进行初始化，可以通过一下命令查看初始化密码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker logs alist
+</span></span><span class="line"><span class="cl"><span class="c1"># 或者</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">exec</span> -it alist ./alist -password
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3-修改alist配置">3. 修改Alist配置</h2>
+<h3 id="31-修改后段设置">3.1 修改后段设置</h3>
+<p>进入Alist管理页面后以此点击 设置&ndash;&gt;后端</p>
+<blockquote>
+<ol>
+<li>
+<p>修改密码</p>
+</li>
+<li>
+<p>修改webDav 用户名</p>
+</li>
+<li>
+<p>修改webDav 密码</p>
+</li>
+<li>
+<p>开启允许搜索</p>
+</li>
+</ol>
+</blockquote>
+<h3 id="32-添加阿里云盘账号">3.2 添加阿里云盘账号</h3>
+<p>进入Alist管理页面后以此点击 设置&ndash;&gt;账号</p>
+<blockquote>
+<ol>
+<li>点击添加账号，并选择阿里云盘</li>
+<li>添加虚拟地址，我填写的是ali</li>
+<li>开启代理和webDav代理</li>
+<li>填写刷新令牌，并点击保存</li>
+</ol>
+</blockquote>
+<h3 id="33-获取阿里云盘token">3.3 获取阿里云盘token</h3>
+<blockquote>
+<ol>
+<li>登陆阿里云盘网页版</li>
+<li>点击F12，进入开发者模式</li>
+<li>选择application(应用程序)</li>
+<li>选择本地存储</li>
+<li>点击token，其中的refresh_token就是我们需要的刷新令牌</li>
+</ol>
+</blockquote>
+<div align=center> 
+  <img src="../images/alidrive_refresh_token.png" alt="image-20220719001227321" style="zoom: 40%;" />
+</div>
+<p>此时我们再次进入Alist 的页面就会默认进入文件系统，网页可以预览图片，文档和视频，也可以通过外置的播放器播放视频，想要再次进入管理系统可以点击页面底部的<strong>管理按钮</strong></p>
+<h2 id="4-集成webdav">4. 集成webDav</h2>
+<p>如果你喜欢使用webDav管理文件，只需要在webDav管理软件中添加ip:4244/dav，并输入3.1中设置的webDav账号密码即可。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-07-18</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/alist/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://GuanWX.github.io/alist/" data-title="使用Alist搭建文件存储系统"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://GuanWX.github.io/alist/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://GuanWX.github.io/alist/" data-title="使用Alist搭建文件存储系统"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://GuanWX.github.io/alist/" data-title="使用Alist搭建文件存储系统"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://GuanWX.github.io/alist/" data-title="使用Alist搭建文件存储系统"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.99.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">GuanWX</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/contrib/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOFHKMC84CPVMz","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"en","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"GuanWX/GuanWX.github.io","repoId":"MDEwOlJlcG9zaXRvcnkzNDMwNTEyNzU="}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"data":{"id-1":"GuanWX","id-2":"GuanWX"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

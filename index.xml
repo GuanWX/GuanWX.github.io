@@ -4,15 +4,15 @@
         <link>https://GuanWX.github.io/</link>
         <description>世界上最小的同性交友平台</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>guanwenxuan1998@gmail.com (GuanWX)</managingEditor>
-            <webMaster>guanwenxuan1998@gmail.com (GuanWX)</webMaster><lastBuildDate>Sat, 28 May 2022 01:41:22 &#43;0800</lastBuildDate>
+            <webMaster>guanwenxuan1998@gmail.com (GuanWX)</webMaster><lastBuildDate>Mon, 18 Jul 2022 01:41:22 &#43;0800</lastBuildDate>
             <atom:link href="https://GuanWX.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
-    <title>First_post</title>
-    <link>https://GuanWX.github.io/first_post/</link>
-    <pubDate>Sat, 28 May 2022 01:41:22 &#43;0800</pubDate>
+    <title>使用Alist搭建文件存储系统</title>
+    <link>https://GuanWX.github.io/alist/</link>
+    <pubDate>Mon, 18 Jul 2022 01:41:22 &#43;0800</pubDate>
     <author>GuanWX</author>
-    <guid>https://GuanWX.github.io/first_post/</guid>
-    <description><![CDATA[<p>我的第一篇Blog</p>]]></description>
+    <guid>https://GuanWX.github.io/alist/</guid>
+    <description><![CDATA[<p>使用Alist搭建文件存储系统</p>]]></description>
 </item>
 </channel>
 </rss>
